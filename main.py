@@ -1,6 +1,7 @@
 from game.score import Score
 from game.snake import Snake
 from game.board import Board
+from game.tile import Tile
 from game.globals import *
 from pygame.locals import *
 import os, pygame, sys, random, neat
@@ -20,7 +21,7 @@ def main_game():
 
   board = Board(screen)
   score = Score(screen)
-  snake = Snake(screen)
+  snake = Snake((int(BOARD_ROWS / 2), int(BOARD_COLS / 2)))
 
   last_obstacle = pygame.sprite.Group()
 
@@ -41,14 +42,13 @@ def main_game():
         if event.key == K_LEFT:
           snake.move_left()
 
-    board.update()
-    #snake.update()
+    snake.update()
+    board.update(snake.get_body())
     score.update()
 
     if pygame.display.get_surface() != None:
       screen.fill(BG_COLOR)
       board.draw()
-      #snake.draw(screen)
       score.draw()
 
       pygame.display.update()

@@ -3,6 +3,7 @@ from enum import Enum
 
 class Snake():
   def __init__(self, head):
+    self.count = 0
     self.direction = Direction.RIGHT
     self.body = []
     self.body.append(head)
@@ -35,20 +36,25 @@ class Snake():
       self.direction = Direction.DOWN
 
   def update(self):
-    x = self.head[0]
-    y = self.head[1]
+    if self.count > 20:
+      x = self.get_head()[0]
+      y = self.get_head()[1]
 
-    if self.direction == Direction.RIGHT:
-      x += 1
-    if self.direction == Direction.UP:
-      y -= 1
-    if self.direction == Direction.LEFT:
-      x -= 1
-    if self.direction == Direction.DOWN:
-      y += 1
+      if self.direction == Direction.RIGHT:
+        x += 1
+      if self.direction == Direction.UP:
+        y -= 1
+      if self.direction == Direction.LEFT:
+        x -= 1
+      if self.direction == Direction.DOWN:
+        y += 1
 
-    self.body.insert(0, (x, y))
-    self.body.pop(len(self.body) - 1)
+      self.body.insert(0, (x, y))
+      self.body.pop(len(self.body) - 1)
+
+      self.count = 0
+
+    self.count += 1
 
   def print_body(self):
     for i in range(len(self.body)):

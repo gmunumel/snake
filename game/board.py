@@ -3,7 +3,6 @@ import pygame
 
 class Board():
   def __init__(self, screen):
-
     self.board = pygame.Surface(BOARD)
 
     for r in range(0, BOARD_ROWS + 1):
@@ -13,18 +12,17 @@ class Board():
       pygame.draw.line(self.board, WHITE, (LEFT + (c * SQUARE_SIZE), TOP), (LEFT + (c * SQUARE_SIZE), BOTTOM), 1)    
 
     self.screen = screen
-    self.board_copy = self.board
+    self.board_copy = []
 
   def update(self, coords):
-
-    self.board_copy = self.board
+    self.board_copy = self.board.copy()
 
     for coord in coords:
       initial_x = coord[0] * SQUARE_SIZE
       initial_y = coord[1] * SQUARE_SIZE
 
       pygame.draw.rect(self.board_copy, SNAKE_COLOR, 
-        (LEFT + initial_y, TOP + initial_x, SQUARE_SIZE, SQUARE_SIZE))
+        (LEFT + initial_x, TOP + initial_y, SQUARE_SIZE, SQUARE_SIZE))
 
   def draw(self):
     self.screen.blit(self.board_copy, self.board_copy.get_rect())

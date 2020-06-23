@@ -43,6 +43,7 @@ def main_game():
           snake.move_left()
 
     snake.update()
+    #snake.print_body()
     board.update(snake.get_body())
     score.update()
 

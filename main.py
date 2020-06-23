@@ -19,10 +19,12 @@ def main_game():
   gameSpeed = 2
   gameOver = False
 
+  snake = Snake((int(BOARD_ROWS / 2), int(BOARD_COLS / 2)))
+  tile_coord = __unique_values(snake.get_body())
+  tile = Tile(tile_coord)
   board = Board(screen)
   score = Score(screen)
-  snake = Snake((int(BOARD_ROWS / 2), int(BOARD_COLS / 2)))
-
+  
   last_obstacle = pygame.sprite.Group()
 
   while not gameOver:
@@ -43,8 +45,7 @@ def main_game():
           snake.move_left()
 
     snake.update()
-    #snake.print_body()
-    board.update(snake.get_body())
+    board.update(snake.get_body(), tile.get_coord())
     score.update()
 
     if pygame.display.get_surface() != None:
@@ -56,6 +57,28 @@ def main_game():
 
     clock.tick(FPS)
 
+
+def __unique_values(snake_coords):
+  coord = ()
+  unique = False
+
+  while not unique:
+    coord = __get_random()
+
+    for snake_coord in snake_coords:
+      if (snake_coord[0] == coord[0] and
+        snake_coord[1] == coord[1]):
+
+        unique = False
+        break
+
+    unique = True
+
+  return coord
+
+def __get_random():
+  return (random.randrange(0, BOARD_ROWS), 
+          random.randrange(0, BOARD_COLS))
 
 def run_neat(config_path):
   config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction, 

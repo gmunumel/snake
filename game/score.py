@@ -19,4 +19,4 @@ class Score():
     self.screen.blit(self.text, self.rect)
 
   def update(self):
-    self.score += 1
+    self.score += 10

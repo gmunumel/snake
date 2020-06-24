@@ -15,12 +15,36 @@ screen = pygame.display.set_mode(srcSize)
 clock = pygame.time.Clock()
 pygame.display.set_caption("Snake")
 
+def check_collide(snake, tile):
+  tile_coord = tile.get_coord()
+  snake_head = snake.get_head()
+
+  for i, coord in enumerate(snake.get_body()):
+    if i != 0:
+      if (snake_head[0] == coord[0] and
+        snake_head[1] == coord[1]):
+
+        snake.set_is_dead()
+        break
+
+  if (not snake.is_dead() and 
+      snake_head[0] == tile_coord[0] and 
+      snake_head[1] == tile_coord[1]):
+    tile.set_is_dead()
+
+def check_limits(snake):
+  snake_head = snake.get_head()
+
+  if (snake_head[0] < 0 or snake_head[0] > BOARD_ROWS - 1 or
+    snake_head[1] < 0 or snake_head[1] > BOARD_COLS - 1):
+    snake.set_is_dead()
+
 def main_game():
-  gameSpeed = 2
+  gameSpeed = 10
   gameOver = False
 
-  snake = Snake((int(BOARD_ROWS / 2), int(BOARD_COLS / 2)))
-  tile_coord = __unique_values(snake.get_body())
+  snake = Snake((int(BOARD_ROWS / 2), int(BOARD_COLS / 2)), gameSpeed)
+  tile_coord = unique_coords(snake.get_body())
   tile = Tile(tile_coord)
   board = Board(screen)
   score = Score(screen)
@@ -45,25 +69,37 @@ def main_game():
           snake.move_left()
 
     snake.update()
+
+    check_limits(snake)
+    check_collide(snake, tile)
+
+    if snake.is_dead():
+      gameOver = True
+      quit()
+
+    if tile.is_dead():
+      score.update()
+      snake.eat_tile()
+      tile_coord = unique_coords(snake.get_body())
+      tile = Tile(tile_coord)
+
     board.update(snake.get_body(), tile.get_coord())
-    score.update()
 
     if pygame.display.get_surface() != None:
       screen.fill(BG_COLOR)
       board.draw()
       score.draw()
-
       pygame.display.update()
 
     clock.tick(FPS)
 
 
-def __unique_values(snake_coords):
+def unique_coords(snake_coords):
   coord = ()
   unique = False
 
   while not unique:
-    coord = __get_random()
+    coord = get_random_coords()
 
     for snake_coord in snake_coords:
       if (snake_coord[0] == coord[0] and
@@ -76,7 +112,7 @@ def __unique_values(snake_coords):
 
   return coord
 
-def __get_random():
+def get_random_coords():
   return (random.randrange(0, BOARD_ROWS), 
           random.randrange(0, BOARD_COLS))
 

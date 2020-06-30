@@ -18,9 +18,10 @@ class Board():
     self.screen = screen
     self.boardCopy = []
 
-  def update(self, snake, tile):
+  def clean_board(self):
     self.boardCopy = self.board.copy()
 
+  def display_snake(self, snake):
     for coord in snake:
       initial_x = coord[0] * SQUARE_SIZE
       initial_y = coord[1] * SQUARE_SIZE
@@ -29,9 +30,10 @@ class Board():
         (LEFT + initial_x, TOP + initial_y, SQUARE_SIZE, SQUARE_SIZE))
 
 
+  def display_tile(self, tile):
     initial_x = tile[0] * SQUARE_SIZE
     initial_y = tile[1] * SQUARE_SIZE
-
+    
     pygame.draw.rect(self.boardCopy, TILE_COLOR, 
         (LEFT + initial_x, TOP + initial_y, SQUARE_SIZE, SQUARE_SIZE))
 

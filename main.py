@@ -15,41 +15,101 @@ screen = pygame.display.set_mode(srcSize)
 clock = pygame.time.Clock()
 pygame.display.set_caption("Snake")
 
-def check_collide(snake, tile):
+def check_collide(snakes, tile, genomes_track, nets):
   tile_coord = tile.get_coord()
-  snake_head = snake.get_head()
 
-  for i, coord in enumerate(snake.get_body()):
-    if i != 0:
-      if (snake_head[0] == coord[0] and
-        snake_head[1] == coord[1]):
+  for i, snake in enumerate(snakes):
 
-        snake.set_is_dead()
-        break
+    snake_head = snake.get_head()
 
-  if (not snake.is_dead() and 
-      snake_head[0] == tile_coord[0] and 
-      snake_head[1] == tile_coord[1]):
-    tile.set_is_dead()
+    for j, coord in enumerate(snake.get_body()):
+      if j != 0:
+        if (snake_head[0] == coord[0] and
+          snake_head[1] == coord[1]):
+
+          snake.set_is_dead()
+
+    check_limits(snake)
+
+    if snake.is_dead():
+      genomes_track[i].fitness -= 1
+      snakes.pop(i)
+      nets.pop(i)
+      genomes_track.pop(i)
+      break
+
+    if (not snake.is_dead() and 
+        not tile.is_dead() and
+        snake_head[0] == tile_coord[0] and 
+        snake_head[1] == tile_coord[1]):
+      tile.set_is_dead()
+      snake.eat_tile()
 
 def check_limits(snake):
+
+  if snake.is_dead():
+    return
+
   snake_head = snake.get_head()
 
   if (snake_head[0] < 0 or snake_head[0] > BOARD_ROWS - 1 or
     snake_head[1] < 0 or snake_head[1] > BOARD_COLS - 1):
     snake.set_is_dead()
 
-def main_game():
-  gameSpeed = 10
+def update_fitness(snakes, tile, genomes_track, nets):
+  for genome_track in genomes_track:
+    genome_track.fitness += 5
+
+  tile_coord = tile.get_coord()
+
+  for i, snake in enumerate(snakes):
+    genomes_track[i].fitness += 0.1
+
+    snake_head = snake.get_head()
+
+    # TODO
+    #distance_x = nets[i].activate((bird.rect.top, abs(bird.rect.top - pipes_s[0].rect.top + 5), 
+    #                            abs(bird.rect.top - pipes_s[1].rect.bottom - 5)))
+
+    distance_x = nets[i].activate((snake_head[0], abs(snake_head[0] - tile_coord[0])))
+
+    distance_y = nets[i].activate((snake_head[1], abs(snake_head[1] - tile_coord[1])))
+
+    # TODO
+    if distance_x[0] > 0.5:
+      snake.move_right()
+    elif distance_y[0] <= 0.5:
+      snake.move_left()
+
+    if distance_y[0] > 0.5:
+      snake.move_up()
+    elif distance_x[0] <= 0.5:
+      snake.move_down()
+
+
+def main_game(genomes, config):
+  gameSpeed = 5
   gameOver = False
 
-  snake = Snake((int(BOARD_ROWS / 2), int(BOARD_COLS / 2)), gameSpeed)
-  tile_coord = unique_coords(snake.get_body())
+  nets = []
+  genomes_track = []
+  snakes = []
+
+  for _, genome in genomes:
+    net = neat.nn.FeedForwardNetwork.create(genome, config)
+    nets.append(net)
+    snake_initial_coord = unique_coords(snakes)
+    snakes.append(Snake(snake_initial_coord, gameSpeed))
+    genome.fitness = 0
+    genomes_track.append(genome)
+
+  #snake = Snake((int(BOARD_ROWS / 2), int(BOARD_COLS / 2)), gameSpeed)
+  tile_coord = unique_coords(snakes)
   tile = Tile(tile_coord)
   board = Board(screen)
   score = Score(screen)
   
-  last_obstacle = pygame.sprite.Group()
+  #last_obstacle = pygame.sprite.Group()
 
   while not gameOver:
 
@@ -60,30 +120,41 @@ def main_game():
 
       if event.type == KEYDOWN:
         if event.key == K_UP:
-          snake.move_up()
+          for snake in snakes:
+            snake.move_up()
         if event.key == K_DOWN:
-          snake.move_down()
+          for snake in snakes:
+            snake.move_down()
         if event.key == K_RIGHT:
-          snake.move_right()
+          for snake in snakes:
+            snake.move_right()
         if event.key == K_LEFT:
-          snake.move_left()
+          for snake in snakes:
+            snake.move_left()
 
-    snake.update()
+    for snake in snakes:
+      snake.update()
 
-    check_limits(snake)
-    check_collide(snake, tile)
-
-    if snake.is_dead():
-      gameOver = True
-      quit()
+    check_collide(snakes, tile, genomes_track, nets)
 
     if tile.is_dead():
       score.update()
-      snake.eat_tile()
-      tile_coord = unique_coords(snake.get_body())
+      #snake.eat_tile()
+      tile_coord = unique_coords(snakes)
       tile = Tile(tile_coord)
 
-    board.update(snake.get_body(), tile.get_coord())
+    if len(snakes) == 0:
+      gameOver = True
+      quit() 
+
+    board.clean_board()
+
+    for snake in snakes:
+      board.display_snake(snake.get_body())
+
+    board.display_tile(tile.get_coord())
+
+    update_fitness(snakes, tile, genomes_track, nets)
 
     if pygame.display.get_surface() != None:
       screen.fill(BG_COLOR)
@@ -94,18 +165,24 @@ def main_game():
     clock.tick(FPS)
 
 
-def unique_coords(snake_coords):
+def unique_coords(snakes):
   coord = ()
   unique = False
 
   while not unique:
+
     coord = get_random_coords()
 
-    for snake_coord in snake_coords:
-      if (snake_coord[0] == coord[0] and
-        snake_coord[1] == coord[1]):
+    for snake in snakes:
 
-        unique = False
+      for snake_coord in snake.get_body():
+        if (snake_coord[0] == coord[0] and
+          snake_coord[1] == coord[1]):
+
+          unique = False
+          break
+
+      if not unique:
         break
 
     unique = True
@@ -143,8 +220,8 @@ def quit():
   sys.exit()
 
 def main():
-  #config_neat()
-  main_game()
+  config_neat()
+  #main_game()
 
 if __name__ == "__main__":
   main()

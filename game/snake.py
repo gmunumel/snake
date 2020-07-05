@@ -26,23 +26,19 @@ class Snake():
     return self.direction
 
   def move_right(self):
-    if (self.direction != Direction.LEFT and 
-        self.direction != Direction.RIGHT):
+    if self.direction != Direction.RIGHT:
       self.direction = Direction.RIGHT
 
   def move_up(self):
-    if (self.direction != Direction.DOWN and 
-        self.direction != Direction.UP):
+    if self.direction != Direction.UP:
       self.direction = Direction.UP
 
   def move_left(self):
-    if (self.direction != Direction.RIGHT and 
-        self.direction != Direction.LEFT):
+    if self.direction != Direction.LEFT:
       self.direction = Direction.LEFT
 
   def move_down(self):
-    if (self.direction != Direction.UP and 
-        self.direction != Direction.DOWN):
+    if self.direction != Direction.DOWN:
       self.direction = Direction.DOWN
 
   def is_dead(self):

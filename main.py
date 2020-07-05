@@ -62,29 +62,45 @@ def update_fitness(snakes, tile, genomes_track, nets):
 
   tile_coord = tile.get_coord()
 
+  print("tile_x " + str(tile_coord[0]))
+  print("tile_y " + str(tile_coord[1]))
+
   for i, snake in enumerate(snakes):
     genomes_track[i].fitness += 0.1
 
     snake_head = snake.get_head()
 
+    #print("snake_x " + str(snake_head[0]))
+
     # TODO
     #distance_x = nets[i].activate((bird.rect.top, abs(bird.rect.top - pipes_s[0].rect.top + 5), 
     #                            abs(bird.rect.top - pipes_s[1].rect.bottom - 5)))
 
-    distance_x = nets[i].activate((snake_head[0], abs(snake_head[0] - tile_coord[0])))
+    diff_x = abs(snake_head[0] - tile_coord[0])
 
-    distance_y = nets[i].activate((snake_head[1], abs(snake_head[1] - tile_coord[1])))
+    diff_y = abs(snake_head[1] - tile_coord[1])
+
+    distance_x = nets[i].activate((snake_head[0], diff_x))
+
+    #if i == 0:
+    #  print("distance_x " + str(distance_x[0]))
+
+    distance_y = nets[i].activate((snake_head[1], diff_y))
 
     # TODO
-    if distance_x[0] > 0.5:
-      snake.move_right()
-    elif distance_y[0] <= 0.5:
-      snake.move_left()
-
-    if distance_y[0] > 0.5:
-      snake.move_up()
-    elif distance_x[0] <= 0.5:
-      snake.move_down()
+    if diff_x > diff_y:
+      if distance_x[0] > 0.5:
+        snake.move_right()
+      else:
+      #elif distance_y[0] <= 0.5:
+        #print("left")
+        snake.move_left()
+    else:
+      if distance_y[0] > 0.5:
+        snake.move_up()
+      else:
+      #elif distance_x[0] <= 0.5:
+        snake.move_down()
 
 
 def main_game(genomes, config):

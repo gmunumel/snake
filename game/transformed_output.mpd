@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MPD xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:mpeg:dash:schema:mpd:2011 DASH-MPD.xsd dash-event-advertising.xsd" xmlns="urn:mpeg:dash:schema:mpd:2011" xmlns:arrisAd="dash-event-advertising.xsd" type="static" profiles="urn:mpeg:dash:profile:isoff-live:2011" minBufferTime="PT1S" mediaPresentationDuration="PT0H6M16.99S">
+	<Period id="1" duration="PT0H0M30S">
+
+		<EventStream schemeIdUri="urn:arrisAd:adEvent:2015" timescale="10000000">
+			<Event id="257" presentationTime="0">
+				<arrisAd:OpportunityStart>
+					<arrisAd:Payload type="tag" encoding="none" compression="none">TrickPlayRestrictions="on"</arrisAd:Payload>
+				</arrisAd:OpportunityStart>
+			</Event>
+			<Event id="258" presentationTime="300000000">
+				<arrisAd:OpportunityEnd>
+					<arrisAd:Payload type="tag" encoding="none" compression="none">TrickPlayRestrictions="off"</arrisAd:Payload>
+				</arrisAd:OpportunityEnd>
+			</Event>
+		</EventStream>
+		
+		<AdaptationSet id="1" segmentAlignment="true" subsegmentAlignment="true" subsegmentStartsWithSAP="1" startWithSAP="1" bitstreamSwitching="true" mimeType="video/mp4" par="16:9" frameRate="30000/1001" sar="1:1" minWidth="320" maxWidth="1920" minHeight="180" maxHeight="1080" minBandwidth="327500" maxBandwidth="3576000">
+		  <Role schemeIdUri="urn:mpeg:dash:role:2011" value="main"/>
+		  <Representation codecs="avc1.4d400d" width="320" height="180" id="prestoplay_384.mp4" bandwidth="327500">
+			<BaseURL>https://demo.cf.castlabs.com/media/prestodash/prestoplay_384.mp4</BaseURL>
+			<SegmentBase timescale="30000" indexRangeExact="true" indexRange="749-972">
+			  <Initialization range="0-748"/>
+			</SegmentBase>
+		  </Representation>
+		  <Representation codecs="avc1.4d4015" width="480" height="270" id="prestoplay_700.mp4" bandwidth="578300">
+			<BaseURL>https://demo.cf.castlabs.com/media/prestodash/prestoplay_700.mp4</BaseURL>
+			<SegmentBase timescale="30000" indexRangeExact="true" indexRange="749-972">
+			  <Initialization range="0-748"/>
+			</SegmentBase>
+		  </Representation>
+		  <Representation codecs="avc1.4d401f" width="800" height="450" id="prestoplay_1300.mp4" bandwidth="1060200">
+			<BaseURL>https://demo.cf.castlabs.com/media/prestodash/prestoplay_1300.mp4</BaseURL>
+			<SegmentBase timescale="30000" indexRangeExact="true" indexRange="750-973">
+			  <Initialization range="0-749"/>
+			</SegmentBase>
+		  </Representation>
+		  <Representation codecs="avc1.4d401f" width="960" height="540" id="prestoplay_1500.mp4" bandwidth="1239000">
+			<BaseURL>https://demo.cf.castlabs.com/media/prestodash/prestoplay_1500.mp4</BaseURL>
+			<SegmentBase timescale="30000" indexRangeExact="true" indexRange="749-972">
+			  <Initialization range="0-748"/>
+			</SegmentBase>
+		  </Representation>
+		  <Representation codecs="avc1.4d401f" width="1280" height="720" id="prestoplay_3500.mp4" bandwidth="2404000">
+			<BaseURL>https://demo.cf.castlabs.com/media/prestodash/prestoplay_3500.mp4</BaseURL>
+			<SegmentBase timescale="30000" indexRangeExact="true" indexRange="749-972">
+			  <Initialization range="0-748"/>
+			</SegmentBase>
+		  </Representation>
+		  <Representation codecs="avc1.4d4028" width="1920" height="1080" id="prestoplay_5000.mp4" bandwidth="3576000">
+			<BaseURL>https://demo.cf.castlabs.com/media/prestodash/prestoplay_5000.mp4</BaseURL>
+			<SegmentBase timescale="30000" indexRangeExact="true" indexRange="750-973">
+			  <Initialization range="0-749"/>
+			</SegmentBase>
+		  </Representation>
+		</AdaptationSet>
+		<AdaptationSet segmentAlignment="true" subsegmentAlignment="true" subsegmentStartsWithSAP="1" startWithSAP="1" bitstreamSwitching="true" mimeType="audio/mp4" lang="eng">
+		  <Role schemeIdUri="urn:mpeg:dash:role:2011" value="main"/>
+		  <Representation codecs="mp4a.40.2" audioSamplingRate="48000" id="prestoplay_audio.mp4" bandwidth="127800">
+			<AudioChannelConfiguration schemeIdUri="urn:mpeg:dash:23003:3:audio_channel_configuration:2011" value="2"/>
+			<BaseURL>https://demo.cf.castlabs.com/media/prestodash/prestoplay_audio.mp4</BaseURL>
+			<SegmentBase timescale="48000" indexRangeExact="true" indexRange="656-867">
+			  <Initialization range="0-655"/>
+			</SegmentBase>
+		  </Representation>
+		</AdaptationSet>
+	</Period>
+	<Period id="2" duration="PT0H1M0S">
+		<AdaptationSet id="0" contentType="video" width="2048" height="872" frameRate="24/1" subsegmentAlignment="true" par="40:17" startWithSAP="1">
+		  <Representation id="0" bandwidth="2355086" codecs="avc1.640028" mimeType="video/mp4" sar="1:1">
+			<BaseURL>https://s3.amazonaws.com/_bc_dml/example-content/sintel_dash/sintel_video.mp4</BaseURL>
+			<SegmentBase indexRange="820-1751" timescale="24">
+			  <Initialization range="0-819"/>
+			</SegmentBase>
+		  </Representation>
+		</AdaptationSet>
+		<AdaptationSet id="1" contentType="audio" lang="en" subsegmentAlignment="true" startWithSAP="1">
+		  <Representation id="1" bandwidth="442355" codecs="mp4a.40.2" mimeType="audio/mp4" audioSamplingRate="48000">
+			<AudioChannelConfiguration schemeIdUri="urn:mpeg:dash:23003:3:audio_channel_configuration:2011" value="6"/>
+			<BaseURL>https://s3.amazonaws.com/_bc_dml/example-content/sintel_dash/sintel_audio.mp4</BaseURL>
+			<SegmentBase indexRange="749-1848" timescale="48000">
+			  <Initialization range="0-748"/>
+			</SegmentBase>
+		  </Representation>
+		</AdaptationSet>
+	</Period>
+</MPD>
